@@ -56,7 +56,7 @@ function updateCounter(instrument, increment) {
 }
 
 function saveCounts() {
-    const instruments = ["trompete", "cornet", "flugelhorn", "trompa", "trombone", "trombonito", "baritono", "eufonio", "tuba"];
+    const instruments = ["Trompete", "Cornet", "Flugelhorn", "Trompa", "Trombone", "Trombonito", "Baritono", "Eufonio", "Tuba"];
     let table = "<table id='result'><tr><th>Instrumento</th><th>Quantidade</th></tr>";
     instruments.forEach(instrument => {
         const count = document.getElementById(`${instrument}-count`).textContent;
