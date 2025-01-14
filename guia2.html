@@ -85,6 +85,7 @@ button:hover {
     background-color: #e0f7fa;
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 <script>
 function updateCounter(instrument, increment) {
     const countElement = document.getElementById(`${instrument}-count`);
@@ -95,17 +96,34 @@ function updateCounter(instrument, increment) {
 
 function saveCounts() {
     const instruments = ["trompete", "cornet", "flugelhorn", "trompa", "trombone", "trombonito", "baritono", "eufonio", "tuba"];
-    let table = "<table id='result'><tr><th>Instrumento</th><th>Quantidade</th></tr>";
+    let tableRows = [["Instrumento", "Quantidade"]]; // Header row for the PDF
     instruments.forEach(instrument => {
         const count = document.getElementById(`${instrument}-count`).textContent;
-        table += `<tr><td>${capitalize(instrument)}</td><td>${count}</td></tr>`;
+        tableRows.push([capitalize(instrument), count]);
     });
-    table += "</table>";
-    document.getElementById("output").innerHTML = table;
+
+    generatePDF(tableRows); // Call the function to generate PDF
 }
 
 function capitalize(word) {
     return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+function generatePDF(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("Relatório de Instrumentos", 105, 20, { align: "center" });
+
+    doc.autoTable({
+        head: [data[0]],
+        body: data.slice(1),
+        startY: 30,
+        theme: 'grid',
+    });
+
+    doc.save("relatorio_instrumentos.pdf");
 }
 </script>
 </head>
@@ -118,8 +136,8 @@ function capitalize(word) {
     <span id="trompete-count">0</span>
     <button onclick="updateCounter('trompete', true)">+</button>
 </div>
-<!-- Repita para os outros instrumentos, conforme necessário -->
-<button onclick="saveCounts()">Salvar</button>
-<div id="output"></div>
+<!-- Repita os elementos para outros instrumentos -->
+<button onclick="saveCounts()">Salvar como PDF</button>
 </body>
 </html>
+
