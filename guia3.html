@@ -1,9 +1,8 @@
-<!-- Guia 3: Madeiras -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Guia Madeiras</title>
+<title>Guia madeiras</title>
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -14,9 +13,12 @@ body {
     min-height: 100vh;
     margin: 0;
     text-align: center;
-    background-color: #f9f9f9;
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    color: #333;
 }
 h1 {
+    font-size: 2.5em;
+    color: #4a90e2;
     margin-bottom: 20px;
 }
 .instrument {
@@ -25,26 +27,51 @@ h1 {
     justify-content: space-between;
     width: 300px;
     margin: 10px 0;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .instrument img {
-    width: 80px;
+    width: 60px;
     height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 button {
-    padding: 5px 10px;
+    padding: 8px 15px;
     font-size: 16px;
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+button:hover {
+    background-color: #357abd;
+}
+#output {
+    margin-top: 30px;
+    width: 80%;
+    text-align: left;
 }
 #result {
-    margin-top: 20px;
-    width: 80%;
+    width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 #result th, #result td {
     border: 1px solid #ccc;
-    padding: 8px;
+    padding: 10px;
+    text-align: left;
+}
+#result th {
+    background-color: #4a90e2;
+    color: #fff;
+}
+#result td {
+    background-color: #f9f9f9;
 }
 </style>
 <script>
@@ -56,103 +83,147 @@ function updateCounter(instrument, increment) {
 }
 
 function saveCounts() {
-    const instruments = ["Flauta", "Oboe", "Oboe_d_amore", "Corne_ingles", "Fagote", "Clarinete", "Clarinete_alto", "Clarinete_baixo", "Sax_Soprano", "Sax_Alto", "Sax_tenor", "Sax_baritono"];
-    let table = "<table id='result'><tr><th>Instrumento</th><th>Quantidade</th></tr>";
+    const instruments = ["flauta", "oboe", "oboe_d_amore", "corne_ingles", "fagote", "clarinete", "clarinete_alto", "clarinete_baixo", "sax_soprano", "sax_alto", "sax_tenor", "sax_baritono"];
+    const counts = {};
+
     instruments.forEach(instrument => {
         const count = document.getElementById(`${instrument}-count`).textContent;
-        table += `<tr><td>${instrument.replace(/_/g, ' ').charAt(0).toUpperCase() + instrument.replace(/_/g, ' ').slice(1)}</td><td>${count}</td></tr>`;
+        counts[instrument] = count;
     });
-    table += "</table>";
-    document.getElementById("output").innerHTML = table;
+
+    localStorage.setItem("instrumentCounts", JSON.stringify(counts));
+    displayTable(counts);
 }
+
+function displayTable(counts) {
+    let tableContent = "<table id='result'><tr><th>Instrumento</th><th>Quantidade</th></tr>";
+
+    for (const [instrument, count] of Object.entries(counts)) {
+        tableContent += `<tr><td>${instrument.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</td><td>${count}</td></tr>`;
+    }
+
+    tableContent += "</table>";
+    document.getElementById("output").innerHTML = tableContent;
+}
+
+function loadCounts() {
+    const savedCounts = localStorage.getItem("instrumentCounts");
+    if (savedCounts) {
+        const counts = JSON.parse(savedCounts);
+
+        for (const [instrument, count] of Object.entries(counts)) {
+            const countElement = document.getElementById(`${instrument}-count`);
+            if (countElement) {
+                countElement.textContent = count;
+            }
+        }
+
+        displayTable(counts);
+    }
+}
+
+window.onload = loadCounts;
 </script>
 </head>
 <body>
 <h1>Instrumentos de Madeiras</h1>
+
 <div class="instrument">
-    <img src="flauta.jpg" alt="Flauta">
+    <img src="Flauta.jpg" alt="Flauta">
     <span>Flauta</span>
     <button onclick="updateCounter('flauta', false)">-</button>
     <span id="flauta-count">0</span>
     <button onclick="updateCounter('flauta', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="oboe.jpg" alt="Oboé">
-    <span>Oboé</span>
+    <img src="Oboe.jpg" alt="Oboe">
+    <span>Oboe</span>
     <button onclick="updateCounter('oboe', false)">-</button>
     <span id="oboe-count">0</span>
     <button onclick="updateCounter('oboe', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="oboe_damore.jpg" alt="Oboé d'Amore">
-    <span>Oboé d'Amore</span>
-    <button onclick="updateCounter('oboe_damore', false)">-</button>
-    <span id="oboe_damore-count">0</span>
-    <button onclick="updateCounter('oboe_damore', true)">+</button>
+    <img src="Oboe_d_amore.jpg" alt="Oboe d'Amore">
+    <span>Oboe d'Amore</span>
+    <button onclick="updateCounter('oboe_d_amore', false)">-</button>
+    <span id="oboe_d_amore-count">0</span>
+    <button onclick="updateCounter('oboe_d_amore', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="corne_ingles.jpg" alt="Corne Inglês">
+    <img src="Corne_ingles.jpg" alt="Corne Inglês">
     <span>Corne Inglês</span>
     <button onclick="updateCounter('corne_ingles', false)">-</button>
     <span id="corne_ingles-count">0</span>
     <button onclick="updateCounter('corne_ingles', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="fagote.jpg" alt="Fagote">
+    <img src="Fagote.jpg" alt="Fagote">
     <span>Fagote</span>
     <button onclick="updateCounter('fagote', false)">-</button>
     <span id="fagote-count">0</span>
     <button onclick="updateCounter('fagote', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="clarinete.jpg" alt="Clarinete">
+    <img src="Clarinete.jpg" alt="Clarinete">
     <span>Clarinete</span>
     <button onclick="updateCounter('clarinete', false)">-</button>
     <span id="clarinete-count">0</span>
     <button onclick="updateCounter('clarinete', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="clarinete_alto.jpg" alt="Clarinete Alto">
+    <img src="Clarinete_alto.jpg" alt="Clarinete Alto">
     <span>Clarinete Alto</span>
     <button onclick="updateCounter('clarinete_alto', false)">-</button>
     <span id="clarinete_alto-count">0</span>
     <button onclick="updateCounter('clarinete_alto', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="clarinete_baixo.jpg" alt="Clarinete Baixo">
+    <img src="Clarinete_baixo.jpg" alt="Clarinete Baixo">
     <span>Clarinete Baixo</span>
     <button onclick="updateCounter('clarinete_baixo', false)">-</button>
     <span id="clarinete_baixo-count">0</span>
     <button onclick="updateCounter('clarinete_baixo', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="sax_soprano.jpg" alt="Sax Soprano">
+    <img src="Sax_soprano.jpg" alt="Sax Soprano">
     <span>Sax Soprano</span>
     <button onclick="updateCounter('sax_soprano', false)">-</button>
     <span id="sax_soprano-count">0</span>
     <button onclick="updateCounter('sax_soprano', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="sax_alto.jpg" alt="Sax Alto">
+    <img src="Sax_alto.jpg" alt="Sax Alto">
     <span>Sax Alto</span>
     <button onclick="updateCounter('sax_alto', false)">-</button>
     <span id="sax_alto-count">0</span>
     <button onclick="updateCounter('sax_alto', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="sax_tenor.jpg" alt="Sax Tenor">
+    <img src="Sax_tenor.jpg" alt="Sax Tenor">
     <span>Sax Tenor</span>
     <button onclick="updateCounter('sax_tenor', false)">-</button>
     <span id="sax_tenor-count">0</span>
     <button onclick="updateCounter('sax_tenor', true)">+</button>
 </div>
+
 <div class="instrument">
-    <img src="sax_baritono.jpg" alt="Sax Barítono">
+    <img src="Sax_baritono.jpg" alt="Sax Barítono">
     <span>Sax Barítono</span>
     <button onclick="updateCounter('sax_baritono', false)">-</button>
     <span id="sax_baritono-count">0</span>
     <button onclick="updateCounter('sax_baritono', true)">+</button>
 </div>
+
 <button onclick="saveCounts()">Salvar</button>
 <div id="output"></div>
 </body>
