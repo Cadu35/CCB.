@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia Cordas</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    text-align: center;
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    color: #333;
+}
+h1 {
+    font-size: 2.5em;
+    color: #4a90e2;
+    margin-bottom: 20px;
+}
+.instrument {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 300px;
+    margin: 10px 0;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.instrument img {
+    width: 60px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+button {
+    padding: 8px 15px;
+    font-size: 16px;
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+button:hover {
+    background-color: #357abd;
+}
+#output {
+    margin-top: 30px;
+    width: 80%;
+    text-align: left;
+}
+#result {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+#result th, #result td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+#result th {
+    background-color: #4a90e2;
+    color: #fff;
+}
+#result td {
+    background-color: #f9f9f9;
+}
+</style>
+<script>
+function updateCounter(instrument, increment) {
+    const countElement = document.getElementById(`${instrument}-count`);
+    let currentCount = parseInt(countElement.textContent);
+    currentCount = increment ? currentCount + 1 : Math.max(0, currentCount - 1);
+    countElement.textContent = currentCount;
+}
+
+function saveCounts() {
+    const instruments = ["organistas"];
+    const rows = [];
+
+    instruments.forEach(instrument => {
+        const count = document.getElementById(`${instrument}-count`).textContent;
+        rows.push({ instrument: instrument.charAt(0).toUpperCase() + instrument.slice(1), count });
+    });
+
+    localStorage.setItem("instrumentCounts", JSON.stringify(rows));
+    renderTable(rows);
+}
+
+function renderTable(rows) {
+    let tableContent = "<table id='result'><tr><th>Instrumento</th><th>Quantidade</th></tr>";
+
+    rows.forEach(row => {
+        tableContent += `<tr><td>${row.instrument}</td><td>${row.count}</td></tr>`;
+    });
+
+    tableContent += "</table>";
+    document.getElementById("output").innerHTML = tableContent;
+}
+
+function loadCounts() {
+    const storedData = localStorage.getItem("instrumentCounts");
+    if (storedData) {
+        const rows = JSON.parse(storedData);
+        renderTable(rows);
+        rows.forEach(row => {
+            const instrument = row.instrument.toLowerCase();
+            document.getElementById(`${instrument}-count`).textContent = row.count;
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadCounts);
+</script>
+</head>
+<body>
+<h1>organistas</h1>
+
+<div class="instrument">
+    <img src="Orgao.jpg" alt="organistas">
+    <span>organistas</span>
+    <button onclick="updateCounter('organistas', false)">-</button>
+    <span id="organistas-count">0</span>
+    <button onclick="updateCounter('organistas', true)">+</button>
+</div>
+
+
+<button onclick="saveCounts()">Salvar</button>
+<div id="output"></div>
+</body>
+</html>
